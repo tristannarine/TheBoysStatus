@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import json
 import os
+from datetime import datetime  # Import for timestamps
 
 app = Flask(__name__)
 
@@ -15,7 +16,12 @@ if not os.path.exists(DATA_FILE):
 
 def read_statuses():
     with open(DATA_FILE, "r") as file:
-        return json.load(file)
+        statuses = json.load(file)
+        # Add default timestamp for old statuses
+        for status in statuses:
+            if "timestamp" not in status:
+                status["timestamp"] = "Unknown"
+        return statuses
 
 
 def write_status(statuses):
@@ -45,19 +51,28 @@ def update_status():
         statuses = read_statuses()
         statuses = [status for status in statuses if status["name"] != name]
 
-        # Add the new status
-        new_status = {"name": name, "activities": activities}
+        # Add the new status with a timestamp
+        timestamp = datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")  # 12-hour format with AM/PM
+        new_status = {
+            "name": name,
+            "activities": activities,
+            "timestamp": timestamp
+        }
         if with_people:  # Only add "with" key if there are people listed
             new_status["with"] = with_people
 
         statuses.append(new_status)
         write_status(statuses)
 
+        # Console notification
+        print(f"New status posted by {name} at {timestamp}: {activities} {'with ' + ', '.join(with_people) if with_people else ''}")
+
         return redirect(url_for("index"))
 
     # Predefined options
     options = ["on cord", "playing fortnite", "working", "busy"]
     return render_template("update_status.html", options=options)
+
 
 
 @app.route("/delete/<name>", methods=["POST"])
