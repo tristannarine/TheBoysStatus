@@ -35,7 +35,7 @@ def update_status():
         name = request.form["name"]
         activities = request.form.getlist("activities")
         custom_activity = request.form.get("custom_activity", "").strip()
-        with_people = request.form.getlist("with_people")
+        with_people = [person.strip() for person in request.form.getlist("with_people") if person.strip()]
 
         # Include custom activity if provided
         if custom_activity:
@@ -46,7 +46,10 @@ def update_status():
         statuses = [status for status in statuses if status["name"] != name]
 
         # Add the new status
-        new_status = {"name": name, "activities": activities, "with": with_people}
+        new_status = {"name": name, "activities": activities}
+        if with_people:  # Only add "with" key if there are people listed
+            new_status["with"] = with_people
+
         statuses.append(new_status)
         write_status(statuses)
 
@@ -63,3 +66,7 @@ def delete_status(name):
     statuses = [status for status in statuses if status["name"] != name]
     write_status(statuses)
     return redirect(url_for("index"))
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
