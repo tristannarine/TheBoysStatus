@@ -8,25 +8,26 @@
 </head>
 <body>
     <h1>Wah we doin?</h1>
-    <ul>
+    <div class="status-container">
         {% for status in statuses %}
-        <li>
-            <strong>{{ status.name }}</strong> is:
+        <div class="status-card">
+            <form action="{{ url_for('delete_status', name=status.name) }}" method="POST">
+                <button type="submit">X</button>
+            </form>
+            <strong>{{ status.name }}</strong>
             <ul>
                 {% for activity in status.activities %}
-                <li>{{ activity }} 
+                <li>
+                    {{ activity }}
                     {% if status.with %}
                     with {{ ", ".join(status.with) }}
                     {% endif %}
                 </li>
                 {% endfor %}
             </ul>
-            <form action="{{ url_for('delete_status', name=status.name) }}" method="POST" style="display: inline;">
-                <button type="submit">Delete</button>
-            </form>
-        </li>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
     <a href="{{ url_for('update_status') }}">Update Your Status</a>
 </body>
 </html>
