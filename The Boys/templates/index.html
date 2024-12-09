@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Status Updates</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
 </head>
 <body>
     <h1>Wah we doin?</h1>
+    <div id="notification" style="display:none; background-color: #007bff; color: white; padding: 10px; text-align: center; margin-bottom: 10px;"></div>
+
     <div class="status-container">
         {% for status in statuses %}
         <div class="status-card">
@@ -25,10 +28,26 @@
                 </li>
                 {% endfor %}
             </ul>
-            <small>{{ status.timestamp }}</small> <!-- Display timestamp -->
+            <small>{{ status.timestamp }}</small>
         </div>
         {% endfor %}
     </div>
     <a href="{{ url_for('update_status') }}">Update Your Status</a>
+
+    <script>
+        const socket = io();
+
+        // Listen for 'status_update' event
+        socket.on('status_update', function(data) {
+            const notification = document.getElementById('notification');
+            notification.textContent = data.message;
+            notification.style.display = 'block';
+
+            // Hide notification after 5 seconds
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        });
+    </script>
 </body>
 </html>
