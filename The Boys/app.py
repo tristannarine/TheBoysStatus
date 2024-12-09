@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
+from flask_socketio import SocketIO, emit
 import json
 import os
-from datetime import datetime  # Import for timestamps
+from datetime import datetime
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'
+socketio = SocketIO(app)
 
 # Path to store statuses
 DATA_FILE = "data/statuses.json"
@@ -16,12 +19,7 @@ if not os.path.exists(DATA_FILE):
 
 def read_statuses():
     with open(DATA_FILE, "r") as file:
-        statuses = json.load(file)
-        # Add default timestamp for old statuses
-        for status in statuses:
-            if "timestamp" not in status:
-                status["timestamp"] = "Unknown"
-        return statuses
+        return json.load(file)
 
 
 def write_status(statuses):
@@ -52,7 +50,7 @@ def update_status():
         statuses = [status for status in statuses if status["name"] != name]
 
         # Add the new status with a timestamp
-        timestamp = datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")  # 12-hour format with AM/PM
+        timestamp = datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")
         new_status = {
             "name": name,
             "activities": activities,
@@ -64,15 +62,20 @@ def update_status():
         statuses.append(new_status)
         write_status(statuses)
 
-        # Console notification
-        print(f"New status posted by {name} at {timestamp}: {activities} {'with ' + ', '.join(with_people) if with_people else ''}")
+        # Emit a real-time notification
+        notification_message = f"{name} updated their status!"
+        socketio.emit('status_update', {
+            'name': name,
+            'activities': activities,
+            'with_people': with_people,
+            'timestamp': timestamp,
+            'message': notification_message
+        })
 
         return redirect(url_for("index"))
 
-    # Predefined options
     options = ["on cord", "playing fortnite", "working", "busy"]
     return render_template("update_status.html", options=options)
-
 
 
 @app.route("/delete/<name>", methods=["POST"])
@@ -84,4 +87,4 @@ def delete_status(name):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True)
