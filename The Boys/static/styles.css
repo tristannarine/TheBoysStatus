@@ -1,21 +1,105 @@
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
+    background-color: #121212; /* Dark background */
+    color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Header */
+h1 {
+    text-align: center;
+    color: #e0e0e0;
+    margin-top: 20px;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+}
+
+/* Links */
+a {
+    display: inline-block;
+    margin: 20px auto;
+    text-align: center;
+    font-size: 1.2rem;
+    text-decoration: none;
+    color: white;
+    background-color: #007bff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+a:hover {
+    background-color: #0056b3;
+}
+
+/* Status Container */
+.status-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
     padding: 20px;
 }
 
-h1 {
-    color: #333;
+/* Status Card */
+.status-card {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    width: 300px;
+    position: relative;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-ul {
-    list-style-type: none;
+.status-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+}
+
+.status-card strong {
+    color: #007bff;
+    font-size: 1.3rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.status-card ul {
+    margin: 0;
     padding: 0;
+    list-style-type: none;
 }
 
-li {
-    background: #f4f4f4;
-    margin: 5px 0;
-    padding: 10px;
+.status-card ul li {
+    margin-bottom: 5px;
+    font-size: 1rem;
+    color: #ddd;
+}
+
+/* Delete Button */
+.status-card form {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.status-card button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
     border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.status-card button:hover {
+    background-color: #a71d2a;
+    transform: scale(1.1);
 }
