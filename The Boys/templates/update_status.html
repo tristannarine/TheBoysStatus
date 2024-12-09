@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Status</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Wah yuh doin?</h1>
+    <form method="POST">
+        <label for="name">Your Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label>Activities:</label>
+        <div>
+            {% for option in options %}
+            <label>
+                <input type="checkbox" name="activities" value="{{ option }}"> {{ option }}
+            </label>
+            <br>
+            {% endfor %}
+        </div>
+
+        <label for="custom_activity">Or Enter Custom Activity:</label>
+        <input type="text" id="custom_activity" name="custom_activity">
+        <br>
+        <br>
+        <label for="with_people">With:</label>
+        <input type="text" id="with_people" name="with_people">
+
+        <button type="submit">Submit</button>
+    </form>
+    <a href="{{ url_for('index') }}">Back to Statuses</a>
+</body>
+</html>
